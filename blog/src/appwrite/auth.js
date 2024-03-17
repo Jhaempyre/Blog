@@ -60,10 +60,6 @@ export class Authservice{
     }
 };
 
-    
-
-
-
 const authservice = new Authservice
 
 
