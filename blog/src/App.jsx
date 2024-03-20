@@ -25,11 +25,11 @@ function App() {
     .finally( () => {setLoading(false)})
   },[])
 
-  return (
+  return  (!loading) ? (
     <>
       <h1>A blogging website with backend as a service</h1>
     </>
-  )
+  ): null
 }
 
 export default App
