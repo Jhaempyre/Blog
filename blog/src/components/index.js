@@ -1,6 +1,6 @@
 import Header from "./Header/Header.jsx"
 import Footer from "./Footer/Footer.jsx"
-import container from "./container/container.js"
+import Container from "./container/container.jsx"
 import Logo from "./Logo.jsx"
 import LogoutBtn from "./Header/logoutBtn.jsx"
 import Signup from "./SignIn.jsx"
@@ -11,10 +11,11 @@ import RTE from "./RTE.jsx";
 import Button from "./Button.jsx";
 import PostForm from "./post-form/PostForm";
 import Input from "./Input.jsx";
+import Select from "./Select.jsx"
 export {
     Footer , 
     Header ,
-    container ,
+    Container ,
     Logo ,
     LogoutBtn,
     Signup,
@@ -24,5 +25,6 @@ export {
     RTE , 
     Button , 
     PostForm , 
-    Input
+    Input , 
+    Select
 }
