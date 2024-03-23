@@ -15,22 +15,24 @@ export class Authservice{
     }
 
 
-    async createAccount({email},{password},{name}){
-        try {
-           const userAccout = await this.account.create(ID.unique(), email , password , name )
-            if(!userAccout){
-                console.log("create user ")
-            }
-            else {
-                return userAccout
-            }
-            return this.login(email,password)
 
+
+//This method is creating user account from appwrite function of create and on sucessfull creation it is attempting the login a
+//as standard approcah and in failure a message to create account 
+
+    async createAccount({ email, password, name }) {
+        try {
+            const userAccount = await this.account.create(ID.unique(), email, password, name);
+            if (userAccount) {
+                return this.login(email, password);
+            } else {
+                console.log("Failed to create user account");
+            }
         } catch (error) {
-            throw error ;
+            throw error;
         }
     }
-
+//Attempting a login via appwrite service createEmailPasswordSession  
     async login({email},{password}){
        try {
         return await this.account.createEmailPasswordSession(email,password)
@@ -38,16 +40,16 @@ export class Authservice{
         throw error
        }
     }
-
+// getting current user form appwrite on get function 
     async getCurrentUser(){
         try {
-            return await this.account.get()   
+            return await this.account.get();
         } catch (error) {
-            throw error              
+            throw error ;             
         }
-        return null ;   
+        //return null (this is happening because after throw no execution you can do with console.log and other statemnet anyway )
     }
-
+// logging out the user by removing sessions 
     async logOutUser(){
         try {
             await this.account.deleteSessions()
@@ -61,6 +63,5 @@ export class Authservice{
 };
 
 const authService = new Authservice
-
 
 export default authService

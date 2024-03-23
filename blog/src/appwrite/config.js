@@ -15,7 +15,8 @@ export class Service{
         this.databases = new Databases(this.client)
         this.bucket = new Storage(this.client)
     }
-
+//while creating post we are emphsising that we write a post by these 
+//data as of slug being the unique id nad others title status iamge etc.. the part of it 
     async createPost({title,slug,content,image, status , userId}){
         try {
             return await this.databases.createDocument(
@@ -36,6 +37,7 @@ export class Service{
         }
     }
 
+//updating post for all values slug being id is not gettiing changed anyway     
     async updatePost(slug,{title,content, image, status}){
         try {
            return  await this.databases.updateDocument(
@@ -51,13 +53,13 @@ export class Service{
            )
             
         } catch (error) {
-            console.log("apprite databse error ", error)
+            console.log("apprite databse error at updatePost ", error)
         }
     }
-
+//by nature of deletion of document we inly get boolean result true or false hence true or false is written 
     async deletePost(slug){
             try{
-                await this.databases.createDocument(
+                await this.databases.deleteDocument(
                     conf.appwriteDatabaseId,
                     conf.appwriteCollectionId,
                     slug
@@ -66,11 +68,11 @@ export class Service{
                 
             }
         catch (error) {
-            console.log("Appwrite deletionerror",error)
+            console.log("Appwrite deletion error",error)
             return false 
         }
     }
-
+// if the methid runs true it will return an object otherwise will go flase 
     async getPost(slug){
         try {
             await this.databases.getDocument(
@@ -79,9 +81,12 @@ export class Service{
                 slug
             )
         } catch (error) {
-            console.log("apprite geetting error",error)
+            console.log("apprite geetting post error",error)
+            throw error;
         }
     }
+
+//it will genrate the post by querying to database about active post and will get it 
 
     async getPosts(){
         try {
@@ -95,6 +100,7 @@ export class Service{
             
         } catch (error) {
          console.log("appwrite error while returning data",error)   
+         throw error;
         }
     }
 
@@ -107,9 +113,11 @@ export class Service{
                 file
             )
         } catch (error) {
-            console.log("problem while creating file",error)
+            console.log("problem while uploading file",error)
         }
     }
+
+//deleting files with uniqueid just 
 
     async deleteFile(fileId){
         try {
@@ -123,7 +131,7 @@ export class Service{
         }
 
     }
-    
+    // from feild id it will return a file preview 
     getFilePreview(fileId){
         return this.bucket.getFilePreview(
             conf.appwriteBucketId,
