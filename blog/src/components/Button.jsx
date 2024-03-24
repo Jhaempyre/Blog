@@ -22,14 +22,16 @@ function Button(
         ...props
     }
 ){
-  // Return the button element with the specified classes and attributes  
+{
+ /* learning i was rendering <Button /> that made it fall 
+  * into infinite loop and of recursively calling the same element
+   the condition of stack overflow increased which potentialy made page unreachable    */} 
 return (
-    <Button className={`px-4 py-2 rounded-lg ${bgColor} ${textColor} ${className}`} {...props}
+    <button className={`px-4 py-2 rounded-lg ${bgColor} ${textColor} ${className}`} {...props}
     >
         {children}
         
-    </Button>
+    </button>
 )
 }
-
 export default Button
