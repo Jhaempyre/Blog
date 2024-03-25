@@ -1,13 +1,15 @@
 import React from 'react'
 import {Editor} from "@tinymce/tinymce-react"
 import { Controller } from 'react-hook-form'
-
+/* Creating real time editor which help us to edit the blog with styles and 
+other formatting properties  */
 function RTE({name, control, label, defaultValue =""}) {
 
   return (
       <div className='w-full'> 
     {label && <label className='inline-block mb-1 pl-1'>{label}</label>}
 
+{/* controller help us to control the element about the edit element  */}
     <Controller
     name={name || "content"}
     control={control}
