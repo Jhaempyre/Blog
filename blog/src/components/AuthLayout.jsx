@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import {useSelector} from 'react-redux'
 import {useNavigate} from 'react-router-dom'
-
+/* we are basically cheking wether user is logged in ? which help us to mantain security 
+or user to get unauthorised access  */
 function AuthLayout({children, authentication = true}) {
     const navigate = useNavigate()
     const [loader, setLoader] = useState(true)

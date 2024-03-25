@@ -1,5 +1,6 @@
 import React, { useId } from 'react'
-
+/* here we are creating a compnent for selct function 
+this bring option inside it we pass things required for selection parementers  */
 function Select({
     options,
     label,
@@ -7,7 +8,7 @@ function Select({
     ...props
 }, ref) {
 const id = useId()
-
+/* here we are returning from ui that if any selct button is used  */
   return (
     <div  className='w-full'>
         {label && <label htmlFor={id}
