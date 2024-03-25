@@ -6,7 +6,8 @@ import {Button, Input, Logo} from './index.js'
 import {useDispatch} from 'react-redux'
 import {useForm} from 'react-hook-form'
 
-
+/* this function particullarly have a function of getting user Data 
+and creating userAccount using appwrite service . */
 function SignIn() {
 const navigate = useNavigate()
 const dispatch = useDispatch()
@@ -27,7 +28,7 @@ const createUser = async(data)=>{
         
     }
 }
-
+/* returning  UI for this login screen  */
   return (
     <div className="flex items-center justify-center">
     <div className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10`}>
@@ -47,7 +48,8 @@ const createUser = async(data)=>{
             </Link>
         </p>
         {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
-
+{/*rhis part gives a form which again serves for geeting userdata and submitting it to 
+appwrite services or createUser */}
         <form onSubmit={handleSubmit(createUser)}>
             <div className='space-y-5'>
                 <Input

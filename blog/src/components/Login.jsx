@@ -3,16 +3,21 @@ import { useNavigate,Link } from 'react-router-dom'
 import {login as authLogin} from '../store/authSlice'
 import {Button , Input , Logo } from './index'
 import { useDispatch } from 'react-redux'
-import authService, { Authservice } from '../appwrite/auth'
+import authService  from '../appwrite/auth'
 import {useForm} from "react-hook-form"
+/*This function allows to get a login page useform is used to perform submit 
+and register operation or to hnadle forms  */
 function Login() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const {register , handleSubmit } = useForm()
     const [error , setError ]= useState("")
-
+/* here we are logging in the user using authservice login functionality 
+and in return we will get seesion if session exsist we will serve the 
+user data nad dispatch the store about data and login status */
   const login = async(data)=>{
- try {
+    setError("")
+  try {
    const session = await authService.login(data)
    if (session){
     const userData = await authService.getCurrentUser()
@@ -25,6 +30,10 @@ function Login() {
  } catch (error) {
  setError(error.message)
  }
+  }
+
+/* here we will develop ui for login as a login componnet we need 
+eamil and password then we also need submit button  */
 
   return (
     <div  className='flex items-center justify-center w-full'
@@ -46,9 +55,12 @@ function Login() {
                     </Link>
         </p>
         {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
+{/* the basic thing is now we are handling form and that require property such as onSubmit
+also other feild like input come under this feild that register , comes from form and has unique string 
+value and further propertires */}
         <form  onSubmit={handleSubmit(login)} className='mt-8' >
         <div className='space-y-5'>
-          <input 
+          <Input
           label = "Email Address"
           placeholder = "Enter your email "
           type = "email"
@@ -61,7 +73,7 @@ function Login() {
           })}
           />
 
-          <input
+          <Input
           label = "Password"
           placeholder="enter  your password"
           type= "password"
@@ -79,6 +91,6 @@ function Login() {
       </div>
   )
 }
-}
+
 
 export default Login
