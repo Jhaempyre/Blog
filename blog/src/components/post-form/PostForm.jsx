@@ -1,12 +1,12 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Input, RTE, Select } from "..";
 import appwriteService from "../../appwrite/conf.js";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-function PostForm({post}) {
-    const {register, handleSubmit, watch, setValue, control, getValues} = useForm({
+function PostForm({ post }) {
+    const { register, handleSubmit, watch, setValue, control, getValues } = useForm({
         defaultValues: {
             title: post?.title || "",
             slug: post?.$id || "",
@@ -16,50 +16,51 @@ function PostForm({post}) {
     });
     const navigate = useNavigate();
     const userData = useSelector((state) => state.auth.userData);
+    const [error, setError] = useState("");
 
     const submit = async (data) => {
-        if (post) {
-            const file = data.image[0] ? await appwriteService.uploadFile(data.image[0]) : null;
+        try {
+            let dbPost;
 
-            if (file) {
-                appwriteService.deleteFile(post.image);
+            if (post) {
+                const file = data.image[0] ? await appwriteService.uploadFile(data.image[0]) : null;
+
+                if (file) {
+                    appwriteService.deleteFile(post.image);
+                }
+
+                dbPost = await appwriteService.updatePost(post.$id, {
+                    ...data,
+                    image: file ? file.$id : undefined,
+                });
+            } else {
+                const file = await appwriteService.uploadFile(data.image[0]);
+
+                if (file) {
+                    const fileId = file.$id;
+                    data.image = fileId;
+
+                    dbPost = await appwriteService.createPost({ ...data, userId: userData.$id });
+                }
             }
-
-            const dbPost = await appwriteService.updatePost(post.$id, {
-                ...data,
-                image: file ? file.$id : undefined,
-            });
 
             if (dbPost) {
                 navigate(`/post/${dbPost.$id}`);
             }
-        } else {
-            const file = await appwriteService.uploadFile(data.image[0]);
-
-            if (file) {
-                const fileId = file.$id;
-                data.image = fileId;
-                const dbPost = await appwriteService.createPost({ ...data, userId: userData.$id });
-
-                if (dbPost) {
-                    navigate(`/post/${dbPost.$id}`);
-                }
-            }
+        } catch (error) {
+            setError(error.message);
+            console.error("Error submitting form:", error);
         }
     };
 
     const slugTransform = useCallback((value) => {
         if (value && typeof value === "string")
-            return value
-                .trim()
-                .toLowerCase()
-                .replace(/[^a-zA-Z\d\s]+/g, "-")
-                .replace(/\s/g, "-");
+            return value.trim().toLowerCase().replace(/[^a-zA-Z\d\s]+/g, "-").replace(/\s/g, "-");
 
         return "";
     }, []);
 
-    React.useEffect(() => {
+    useEffect(() => {
         const subscription = watch((value, { name }) => {
             if (name === "title") {
                 setValue("slug", slugTransform(value.title), { shouldValidate: true });
@@ -69,9 +70,8 @@ function PostForm({post}) {
         return () => subscription.unsubscribe();
     }, [watch, slugTransform, setValue]);
 
-
-  return (
-    <form onSubmit={handleSubmit(submit)} className="flex flex-wrap">
+    return (
+        <form onSubmit={handleSubmit(submit)} className="flex flex-wrap">
             <div className="w-2/3 px-2">
                 <Input
                     label="Title :"
@@ -101,7 +101,7 @@ function PostForm({post}) {
                 {post && (
                     <div className="w-full mb-4">
                         <img
-                            src={appwriteService.getFilePreview(post.featuredImage)}
+                            src={appwriteService.getFilePreview(post.image)}
                             alt={post.title}
                             className="rounded-lg"
                         />
@@ -113,6 +113,7 @@ function PostForm({post}) {
                     className="mb-4"
                     {...register("status", { required: true })}
                 />
+                {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
                 <Button type="submit" bgColor={post ? "bg-green-500" : undefined} className="w-full">
                     {post ? "Update" : "Submit"}
                 </Button>
@@ -121,5 +122,4 @@ function PostForm({post}) {
     );
 }
 
-
-export default PostForm
+export default PostForm;
